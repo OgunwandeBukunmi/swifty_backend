@@ -1,7 +1,8 @@
 import { askGroq } from "../llm/groq.js";
 
 
-export async function runAgent(userPrompt) {
+export async function runAgent(userPrompt, history) {
+
 
     const messages = [
         {
@@ -119,7 +120,35 @@ Example:
 
 10. Never invent wallet addresses, token symbols, balances, transaction history, or swap amounts. Only use values explicitly provided by the user.
 
-11. Return ONLY valid JSON.
+11. If the user asks things like tell me about the crypto market or news about crypto
+{
+"action":"news",
+"message":"Fetching news"
+"function":"get_news",
+"params":{
+"category":"crypto"
+}
+}
+12. If the user asks things like tell me news about coin or why coin is pumping or dumping
+{
+"action":"news",
+"message":"Fetching news"
+"function":"get_news",
+"params":{
+"category":"coin"
+}
+}
+For example User: Tell me why BTC is pumping
+{
+"action":"news",
+"message":"Fetching news"
+"function":"get_news",
+"params":{
+"category":"BTC"
+}
+}
+
+13. Return ONLY valid JSON.
 
 Examples:
 
@@ -159,6 +188,7 @@ User: Send 50 USDT to EQABC123...
 `
 
         },
+        ...history,
         {
             role: "user",
             content: userPrompt
