@@ -1,7 +1,7 @@
 import { askGroq } from "../llm/groq.js";
 
 
-export async function runAgent(userPrompt, history) {
+export async function runAgent(userPrompt, history, cryptoCoins) {
 
 
     const messages = [
@@ -184,7 +184,33 @@ User: Send 50 USDT to EQABC123...
 "address": "EQABC123..."
 }
 }
+14. There are some crypto coins and their Prices just incase a user asks for prices of these coins
+${JSON.stringify(cryptoCoins)}
+If they ask outside these coins say you dont know
+15. If user tell you to create a price trigger for them you return this JSON
+{
+"action": "create_trigger",
+"message": "Creating a price trigger for you.",
+"function": "create_trigger",
+"params": {
+"coin": "BTC",
+"price": 100000,
+"condition": "above"
+}
 
+Example
+User: create a trigger for BTC to alert me when its above $100000
+{
+"action": "create_trigger",
+"message": "Creating a price trigger for you.",
+"function": "create_trigger",
+"params": {
+"coin": "Bitcoin",
+"symbol" : "BTC",
+"price": 100000,
+"condition": "above"
+}
+}
 `
 
         },

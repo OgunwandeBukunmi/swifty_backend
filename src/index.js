@@ -6,6 +6,8 @@ import morgan from "morgan";
 import { runAgent } from "./agent/runtime.js";
 import { getDb } from './config/mongodb.js';
 import { startPriceCron } from './cron/priceCron.js';
+import { ObjectId } from 'mongodb';
+
 
 const app = express();
 app.use(
@@ -27,7 +29,7 @@ app.post("/api/chat", async (req, res) => {
 
     try {
 
-        const { prompt, history } = req.body;
+        const { prompt, history, cryptoCoins } = req.body;
 
         if (!prompt) {
             return res.status(400).json({
@@ -35,7 +37,7 @@ app.post("/api/chat", async (req, res) => {
             });
         }
 
-        const result = await runAgent(prompt, history);
+        const result = await runAgent(prompt, history, cryptoCoins);
 
         console.log(result);
 
@@ -57,7 +59,8 @@ app.post("/api/trigger", async (req, res) => {
     try {
         const triggerDB = await getDb("triggers")
         const trigger = triggerDB.collection("triggers")
-        const result = await trigger.insertOne({ userId, asset, symbol, targetPrice, condition, isActive })
+        const insertResult = await trigger.insertOne({ userId, asset, symbol, targetPrice, condition, isActive, triggered: false, triggeredAt: null, currentPrice: null })
+        const result = await trigger.findOne({ _id: insertResult.insertedId })
         res.json(result)
     } catch (error) {
         console.error(error)
@@ -65,12 +68,49 @@ app.post("/api/trigger", async (req, res) => {
     }
 
 })
+app.delete("/api/trigger/:userId/:id", async (req, res) => {
+    const { userId, id } = req.params
+    try {
+        const triggerDB = await getDb("triggers")
+        const trigger = triggerDB.collection("triggers")
+        const result = await trigger.deleteOne({ userId, _id: new ObjectId(id) })
+        res.json(result)
+    } catch (error) {
+        console.error(error)
+        res.status(500).json({ error: "Internal server error" })
+    }
+})
+app.get("/api/trigger/:userId", async (req, res) => {
+    const userId = req.params.userId
+    try {
+        const triggerDB = await getDb("triggers")
+        const trigger = triggerDB.collection("triggers")
+        const result = await trigger.find({ userId, isActive: true }).toArray()
+        res.json(result)
+    } catch (error) {
+        console.error(error)
+        res.status(500).json({ error: "Internal server error" })
+    }
+})
+app.put("api/trigger/:userId/:id", async (req, res) => {
+    const { userId, id } = req.params
+    try {
+        const triggerDB = await getDb("triggers")
+        const trigger = triggerDB.collection("triggers")
+        const result = await trigger.updateOne({ userId, _id: new ObjectId(id) }, { $set: { isActive: false } })
+        res.json(result)
+    } catch (error) {
+        console.error(error)
+        res.status(500).json({ error: "Internal server error" })
+    }
+})
 app.get("/api/notification/:userId", async (req, res) => {
     const userId = req.params.userId
     try {
         const triggerDB = await getDb("triggers")
-        const trigger = triggerDB.collection("notifications")
-        const result = await trigger.find({ userId }).toArray()
+        const notifications = triggerDB.collection("notifications")
+        const result = await notifications.find({ userId }).toArray()
+        console.log(result)
         res.json(result)
     } catch (error) {
         console.error(error)
