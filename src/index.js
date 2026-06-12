@@ -13,7 +13,8 @@ app.use(
         origin: [
             "http://localhost:5173",
             "https://handiness-entity-moonscape.ngrok-free.dev",
-            "https://swifty-rose.vercel.app"
+            "https://swifty-rose.vercel.app",
+
         ],
         credentials: true,
     })
@@ -21,7 +22,7 @@ app.use(
 app.use(express.json());
 app.use(morgan("dev"));
 
-// startPriceCron()
+startPriceCron()
 app.post("/api/chat", async (req, res) => {
 
     try {
