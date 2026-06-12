@@ -97,7 +97,9 @@ app.put("api/trigger/:userId/:id", async (req, res) => {
     try {
         const triggerDB = await getDb("triggers")
         const trigger = triggerDB.collection("triggers")
-        const result = await trigger.updateOne({ userId, _id: new ObjectId(id) }, { $set: { isActive: false } })
+        const doc = await trigger.findOne({ userId, _id: new ObjectId(id) })
+        if (!doc) return res.status(404).json({ error: "Trigger not found" })
+        const result = await trigger.updateOne({ userId, _id: new ObjectId(id) }, { $set: { isActive: !doc.isActive } })
         res.json(result)
     } catch (error) {
         console.error(error)
