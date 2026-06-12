@@ -15,7 +15,7 @@ app.use(
         origin: [
             "http://localhost:5173",
             "https://handiness-entity-moonscape.ngrok-free.dev",
-            "https://swifty-rose.vercel.app",
+            "https://swifty-rosy.vercel.app",
 
         ],
         credentials: true,
