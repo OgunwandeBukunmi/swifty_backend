@@ -8,14 +8,20 @@ import { getDb } from './config/mongodb.js';
 import { startPriceCron } from './cron/priceCron.js';
 
 const app = express();
-
-app.use(cors({
-    origin: "*"
-}));
+app.use(
+    cors({
+        origin: [
+            "http://localhost:5173",
+            "https://handiness-entity-moonscape.ngrok-free.dev",
+            "https://swifty-rose.vercel.app"
+        ],
+        credentials: true,
+    })
+);
 app.use(express.json());
 app.use(morgan("dev"));
 
-startPriceCron()
+// startPriceCron()
 app.post("/api/chat", async (req, res) => {
 
     try {

@@ -24,7 +24,7 @@ async function getPrice(coinId) {
 
 
 export async function startPriceCron() {
-    cron.schedule("* * * * *", async () => {
+    cron.schedule("*/2 * * * *", async () => {
         try {
             console.log("Checking triggers...");
 
