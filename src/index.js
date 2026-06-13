@@ -11,15 +11,7 @@ import { ObjectId } from 'mongodb';
 
 const app = express();
 app.use(
-    cors({
-        origin: [
-            "http://localhost:5173",
-            "https://handiness-entity-moonscape.ngrok-free.dev",
-            "https://swifty-rosy.vercel.app",
-
-        ],
-        credentials: true,
-    })
+    cors()
 );
 app.use(express.json());
 app.use(morgan("dev"));
