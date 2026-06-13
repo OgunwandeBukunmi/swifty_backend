@@ -85,7 +85,7 @@ app.get("/api/trigger/:userId", async (req, res) => {
     try {
         const triggerDB = await getDb("triggers")
         const trigger = triggerDB.collection("triggers")
-        const result = await trigger.find({ userId, isActive: true }).toArray()
+        const result = await trigger.find({ userId }).toArray()
         res.json(result)
     } catch (error) {
         console.error(error)

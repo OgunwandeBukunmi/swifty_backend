@@ -210,6 +210,30 @@ User: create a trigger for BTC to alert me when its above $100000
 "price": 100000,
 "condition": "above"
 }
+Example
+User: create a trigger for BTC to alert me when its below $100000
+{
+"action": "create_trigger",
+"message": "Creating a price trigger for you.",
+"function": "create_trigger",
+"params": {
+"coin": "Bitcoin",
+"symbol" : "BTC",
+"price": 100000,
+"condition": "below"
+}
+Example
+User: create a trigger for BTC to alert me when it hits $100000
+{
+"action": "create_trigger",
+"message": "Creating a price trigger for you.",
+"function": "create_trigger",
+"params": {
+"coin": "Bitcoin",
+"symbol" : "BTC",
+"price": 99999,
+"condition": "above"
+}
 }
 `
 
